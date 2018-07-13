@@ -1,0 +1,11 @@
+{
+    "name": "trompt",
+    "description": "inquirer with followup questions",
+    "main": "index.js",
+    "version": "0.0.3",
+    "dependencies": {
+        "ansi-escapes": "^3.1.0",
+        "chalk": "^2.4.1",
+        "tmitter": "^1.0.0"
+    }
+}
