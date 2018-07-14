@@ -12,7 +12,10 @@ prompt('question').then(answer=>console.log(answer));
     - stramline prompts, ensure only one at a time (done)
     - architecture to support more prompt types (done)
     - password
-    - list
+    - number, integer (done)
+    - list/select (done)
     - rawList
     - checkbox
-    - validation
+    - validation (done)
+    - slider
+    - scolling list/checkbox

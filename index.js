@@ -1,5 +1,5 @@
 const ansi = require('ansi-escapes');
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 const tmitter = require('tmitter');
 var rl = require('readline');
 var Stream = require('stream')
@@ -50,6 +50,9 @@ function prompt(question) {
         return Promise.all(config.map(prompt));
     }
     var promise = previousePrompts.then(() => {
+        if(typeof(promptTypes[config.type])!=='function'){
+            throw new Error(`${config.type} is not a valid type`);
+        }
         process.stdin.setRawMode(true);
         return promptTypes[config.type](config);
     }).then(result=>{
@@ -71,36 +74,196 @@ function normalize(question){
     if(typeof(question)==='string') return {type:'input', question};
     if(typeof(question)==='number') return {type:'input', question: question.toString()};
     if(!question.type) throw new Error('missing type for question');
+
+    //aliases;
+    if(question.type==='list') question.type=='select';
+    if(question.message) question.question = question.message;
     return question;
 }
 
 const promptTypes = {
     input(config) {
+        const validate = config.validate || ((v) => typeof(v)==='string');
         const promise = getDefer();
         const question = config.question||':';
+        var word = config.default || '';
+        
+        if(!validate(word)){
+            throw new Error('default value '+(word)+' is invalid');
+        }
+
         write(chalk.bold(question) + ' ');
 
-        var word = '';
         emitter.on('keypress', key => {
             if (key.ctrl && key.name === 'c') {
-                process.exit();
-            } else {
-                if (key.name === 'return' || key.name === 'tab') {
-                    write(ansi.cursorMove(-word.length, 0) + chalk.cyan(word) + '\n');
-                    promise.resolve(word)
-                } else if (key.name === 'backspace') {
-                    if (word.length) {
-                        word = word.substr(0, word.length - 1);
-                        write(ansi.cursorMove(-1, 0) + ' ' + ansi.cursorMove(-1, 0));
-                    }
-                }else if(['up','down','left','right'].includes(key.name)){
+                return process.exit();
+            }
 
-                } else {
-                    word += key.sequence
-                    write(key.sequence)
-                };
+            if (key.name === 'return' || key.name === 'tab') {
+                var value = word;
+                if(!validate(value)) return;
+                write(ansi.cursorMove(-word.length, 0) + chalk.cyan(word) + '\n');
+                return promise.resolve(word)
+            }
+
+            if (key.name === 'backspace') {
+                if (word.length) {
+                    word = word.substr(0, word.length - 1);
+                    write(ansi.cursorMove(-1, 0) + ' ' + ansi.cursorMove(-1, 0));
+                }
+                return;
+            }
+
+            if(['up','down','left','right'].includes(key.name)){
+                return;
+            }
+            
+            word += key.sequence
+            write(key.sequence)
+        });
+        return promise;
+    },
+    integer(config){
+        config.integer = true;
+        return promptTypes.number(config);
+    },
+    int(config){
+        return promptTypes.integer(config);
+    },
+    number(config) {
+        const integer = !!config.integer;
+        const validate = config.validate || (() => true);
+        const promise = getDefer();
+        const question = config.question||':';
+        const suffix = ' '+(config.suffix||'');
+        var word = config.default || '';
+        if(!validate(parseFloat(word||0))){
+            throw new Error('default value '+parseFloat(config.default)+' is invalid');
+        }
+        
+        function print(){
+            write(ansi.eraseLine
+                + ansi.cursorLeft
+                + chalk.bold(question) 
+                + ' '
+                + word 
+                + chalk.gray(suffix)
+                + ansi.cursorMove(-1,0).repeat(suffix.length)
+            );
+        }
+        print();
+        emitter.on('keypress', key => {
+            if (key.ctrl && key.name === 'c') {
+                return process.exit();
+            }
+
+            if (key.name === 'return' || key.name === 'tab') {
+                var value = parseFloat(word)
+                if(!validate(value))return;
+                if(Number.isNaN(value))return;
+                if(typeof(config.max)==='number' && value>config.max)return;
+                if(typeof(config.min)==='number' && value<config.min)return;
+                write(ansi.cursorMove(-word.length, 0) + chalk.cyan(word+suffix) + '\n');
+                return promise.resolve(parseFloat(word))
+            }
+
+            if (key.name === 'backspace') {
+                if (word.length) {
+                    word = word.substr(0, word.length - 1);
+                    print();
+                }
+                return;
+            }
+
+            if(['up','down','left','right'].includes(key.name)){
+                return;
+            }
+            
+            if('0123456789'.includes(key.sequence)){
+                word += key.sequence
+                print();
+            }
+
+            if(key.sequence=='.' && !word.includes('.')){
+                word += '.';
+                print();
             }
         });
         return promise;
+    },
+    select(config) {
+        const promise = getDefer();
+        const question = config.question||':';
+        const choices = normalizeSelectChoices(config.choices)
+        var index = 0;
+        function print(){
+            write(ansi.eraseLine+chalk.bold(question) +' '+ choices[index].text +'\n');
+            choices.forEach((choice,i)=>{
+                write(ansi.eraseLine)
+                if(i==index){
+                    write(chalk.cyan('> '+choice.text+'\n'));   
+                }else{
+                    write('  '+choice.text+'\n');
+                }
+            })
+        }
+
+        print();
+        
+        var word = '';
+        emitter.on('keypress', key => {
+            if (key.ctrl && key.name === 'c') {
+                return process.exit();
+            }
+
+            if (key.name === 'return' || key.name === 'tab') {
+                write(ansi.cursorUp(choices.length+1)
+                    + ansi.eraseLine 
+                    + chalk.bold(question) +' '+ chalk.cyan(choices[index].text) 
+                    +'\n'
+                    + (ansi.eraseLine+'\n').repeat(choices.length)
+                    +ansi.cursorUp(choices.length)
+                );
+                return promise.resolve(choices[index].value)
+            }
+
+            if (key.name === 'backspace') {
+                if (word.length) {
+                    word = word.substr(0, word.length - 1);
+                    write(ansi.cursorMove(-1, 0) + ' ' + ansi.cursorMove(-1, 0));
+                }
+                return;
+            }
+            if(key.name==='up'){
+                if(index)index--;
+            }
+            if(key.name==='down'){
+                if(index<=(choices.length-1)) index++;
+            }
+
+            if(['left','right'].includes(key.name)){
+                return;
+            }
+
+            write(ansi.cursorUp(choices.length+1));
+            print()
+        
+            
+        });
+        return promise;
     }
+}
+/**
+ * 
+ * @param {{}[]} choices 
+ */
+function normalizeSelectChoices(choices){
+    return choices.map((choice)=>{
+        if(!choice) throw new Error(JSON.stringify(choice)+' is not a choice');
+        if(typeof(choice)==='string') return {value:choice, text:choice};
+        if(typeof(choice=='number')) return {value:choice, text:choice.toString()};
+        if(!choice.hasOwnProperty('text')) throw new Error('text property missing');
+        if(!choice.hasOwnProperty(value)) return {value: choice.text, text: choice.text};
+        return {...choice};
+    })
 }
