@@ -1,8 +1,13 @@
 {
     "name": "trompt",
     "description": "inquirer with followup questions",
+    "keywords": [
+        "console",
+        "prompt",
+        "input"
+    ],
     "main": "index.js",
-    "version": "0.0.3",
+    "version": "0.0.7",
     "dependencies": {
         "ansi-escapes": "^3.1.0",
         "chalk": "^2.4.1",

@@ -2,18 +2,20 @@ var {prompt} = require('./index.js');
 
 ;(async function() {
 
-    var name = await prompt('name');
-    var mail = (await prompt('mail')).toLowerCase();
-    var job = await prompt('job');
-    var age = parseInt(await prompt('age'));
-    var height = await prompt('hight');
-    var eyeColor = await prompt('eye color');
-    var hairColor = await prompt('hair color');
-    var hairLength = await prompt('hair length');
+    const name = await prompt('name');
+    const mail = (await prompt('mail')).toLowerCase();
+    const job = await prompt('job');
+    const age = parseInt(await prompt('age'));
+    const height = await prompt('hight');
+    const eyeColor = await prompt('eye color');
+    const [ hairColor, hairLength] = await Promise.all([
+        prompt('hair color'),
+        prompt('hair length'),
+    ]);
 
 
     var user = {
-        name, mail, age, height, eyeColor,
+        name, mail, job, age, height, eyeColor,
         hair: { color: hairColor, length: hairLength }
     };
 
