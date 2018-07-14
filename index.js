@@ -4,10 +4,6 @@ const tmitter = require('tmitter');
 var rl = require('readline');
 var Stream = require('stream')
 
-function times(n, i) {
-    if (typeof (n) === 'number') return n * i;
-    return new Array(i).join(n);
-}
 const write = s => process.stdout.write(s);
 
 function getDefer(){
@@ -239,15 +235,17 @@ const promptTypes = {
         const choices = normalizeSelectChoices(config.choices)
         var index = 0;
         function print(){
-            write(ansi.eraseLine+chalk.bold(question) +' '+ choices[index].text +'\n');
+            var print = '';
+            print+=(ansi.eraseLine+chalk.bold(question) +' '+ choices[index].text +'\n');
             choices.forEach((choice,i)=>{
-                write(ansi.eraseLine)
+                print+=(ansi.eraseLine)
                 if(i==index){
-                    write(chalk.cyan('> '+choice.text+'\n'));   
+                    print+=(chalk.cyan('> '+choice.text+'\n'));   
                 }else{
-                    write('  '+choice.text+'\n');
+                    print+=('  '+choice.text+'\n');
                 }
-            })
+            });
+            write(print);
         }
 
         print();
@@ -269,13 +267,6 @@ const promptTypes = {
                 return promise.resolve(choices[index].value)
             }
 
-            if (key.name === 'backspace') {
-                if (word.length) {
-                    word = word.substr(0, word.length - 1);
-                    write(ansi.cursorMove(-1, 0) + ' ' + ansi.cursorMove(-1, 0));
-                }
-                return;
-            }
             if(key.name==='up'){
                 if(index)index--;
             }
@@ -288,9 +279,7 @@ const promptTypes = {
             }
 
             write(ansi.cursorUp(choices.length+1));
-            print()
-        
-            
+            print();
         });
         return promise;
     },
@@ -301,41 +290,46 @@ const promptTypes = {
         const unselectedBox = '[ ]';
         const selectedBox = '[x]';
         var index = 0;
+        var writtenLines = 0;
         function print(){
-            var selections = choices.filter(c=>c.selected).map(c=>c.text).join(', ')
-            write(ansi.eraseLine+chalk.bold(question) +' '+ selections +'\n');
+            var print = ansi.eraseLines(writtenLines);
+            print += (ansi.eraseLine+chalk.bold(question) +' '+ selections() +'\n');
             choices.forEach((choice,i)=>{
-                write(ansi.eraseLine)
+                print+=(ansi.eraseLine)
                 if(i==index){
                     if(choice.selected){
-                        write(chalk.cyan('> '+ selectedBox+' '+choice.text+'\n'));   
+                        print+=(chalk.cyan('> '+ selectedBox+' '+choice.text+'\n'));   
                     }else {
-                        write(chalk.cyan('> '+ unselectedBox+' '+choice.text+'\n'));
+                        print+=(chalk.cyan('> '+ unselectedBox+' '+choice.text+'\n'));
                     }
                 }else{
                     if(choice.selected){
-                        write('  '+selectedBox+' '+choice.text+'\n'); 
+                        print+=('  '+selectedBox+' '+choice.text+'\n'); 
                     }else {
-                        write('  '+unselectedBox+' '+choice.text+'\n');
+                        print+=('  '+unselectedBox+' '+choice.text+'\n');
                     }
                 }
             });
+            write(print);
+            writtenLines = print.split('\n').length+Math.floor((question+' '+selections()).length/process.stdout.columns);
+        }
+
+        function selections(){
+            return choices.filter(c=>c.selected).map(c=>c.text).join(', ');
         }
 
         print();
         
-        var word = '';
         emitter.on('keypress', key => {
             if (key.ctrl && key.name === 'c') {
                 return process.exit();
             }
 
             if (key.name === 'return' || key.name === 'tab') {
-                var selections = choices.filter(c=>c.selected).map(c=>c.text).join(', ');
                 var selectionValues = choices.filter(c=>c.selected).map(c=>c.value);
-                write(ansi.cursorUp(choices.length+1)
+                write(ansi.eraseLines(writtenLines)
                     + ansi.eraseLine 
-                    + chalk.bold(question) +' '+ chalk.cyan(selections) 
+                    + chalk.bold(question) +' '+ chalk.cyan(selections()) 
                     +'\n'
                     + (ansi.eraseLine+'\n').repeat(choices.length)
                     +ansi.cursorUp(choices.length)
@@ -343,18 +337,11 @@ const promptTypes = {
                 return promise.resolve(selectionValues)
             }
 
-            if (key.name === 'backspace') {
-                if (word.length) {
-                    word = word.substr(0, word.length - 1);
-                    write(ansi.cursorMove(-1, 0) + ' ' + ansi.cursorMove(-1, 0));
-                }
-                return;
-            }
             if(key.name==='up'){
                 if(index)index--;
             }
             if(key.name==='down'){
-                if(index<=(choices.length-1)) index++;
+                if(index<(choices.length-1)) index++;
             }
             if(key.name==='space'){
                 choices[index].selected = choices[index].selected?false:true;
@@ -363,7 +350,9 @@ const promptTypes = {
             if(['left','right'].includes(key.name)){
                 return;
             }
-            write(ansi.cursorUp(choices.length+1));
+            
+            
+            //write(ansi.cursorUp(choices.length+Math.ceil((question+' '+selections()).length/process.stdout.columns)));
             print()
         });
         return promise;

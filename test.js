@@ -29,7 +29,7 @@ var {prompt} = require('./index.js');
             'blockchain',
             'machine learning'
         ]
-    })
+    });
     
     // let the user select his eye color
     const eyeColor = await prompt({

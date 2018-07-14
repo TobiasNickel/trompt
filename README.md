@@ -1,4 +1,4 @@
-inquirer with follow up questions.
+CLI questions ala inquirer, allowing follow up questions.
 
 ![trompt](https://unpkg.com/trompt@0.0.10/trompt_v2.gif)
 

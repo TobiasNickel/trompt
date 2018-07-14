@@ -1,16 +1,25 @@
 {
     "name": "trompt",
-    "description": "inquirer with followup questions",
+    "description": "CLI questionary",
     "keywords": [
         "console",
         "prompt",
         "input"
     ],
     "main": "index.js",
-    "version": "0.0.10",
+    "version": "0.0.11",
+    "license": "MIT",
     "dependencies": {
         "ansi-escapes": "^3.1.0",
         "chalk": "^2.4.1",
         "tmitter": "^1.0.0"
+    },
+    "homepage": "https://github.com/TobiasNickel/trompt#readme",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/TobiasNickel/trompt.git"
+    },
+    "bugs": {
+      "url": "https://github.com/TobiasNickel/trompt/issues"
     }
 }
