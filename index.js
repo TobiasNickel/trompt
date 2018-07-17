@@ -2,7 +2,7 @@ const ansi = require('ansi-escapes');
 const chalk = require('chalk').default;
 const tmitter = require('tmitter');
 var rl = require('readline');
-var Stream = require('stream')
+var Stream = require('stream');
 
 const write = s => process.stdout.write(s);
 
@@ -36,8 +36,8 @@ tmitter(emitter);
 var previousePrompts = Promise.resolve();
 
 /**
- * 
- * @param {String} question 
+ *
+ * @param {String} question
  * @return {Promise<String>}
  */
 function prompt(question) {
@@ -84,7 +84,7 @@ const promptTypes = {
         const promise = getDefer();
         const question = config.question||':';
         var word = config.default || '';
-        
+
         if(!validate(word)){
             throw new Error('default value '+(word)+' is invalid');
         }
@@ -114,7 +114,7 @@ const promptTypes = {
             if(['up','down','left','right'].includes(key.name)){
                 return;
             }
-            
+
             word += key.sequence
             write(key.sequence)
         });
@@ -125,7 +125,7 @@ const promptTypes = {
         const promise = getDefer();
         const question = config.question||':';
         var word = config.default || '';
-        
+
         if(!validate(word)){
             throw new Error('default value '+(word)+' is invalid');
         }
@@ -155,7 +155,7 @@ const promptTypes = {
             if(['up','down','left','right'].includes(key.name)){
                 return;
             }
-            
+
             word += key.sequence
             write('*')
         });
@@ -178,13 +178,13 @@ const promptTypes = {
         if(!validate(parseFloat(word||0))){
             throw new Error('default value '+parseFloat(config.default)+' is invalid');
         }
-        
+
         function print(){
             write(ansi.eraseLine
                 + ansi.cursorLeft
-                + chalk.bold(question) 
+                + chalk.bold(question)
                 + ' '
-                + word 
+                + word
                 + chalk.gray(suffix)
                 + ansi.cursorMove(-1,0).repeat(suffix.length)
             );
@@ -216,7 +216,7 @@ const promptTypes = {
             if(['up','down','left','right'].includes(key.name)){
                 return;
             }
-            
+
             if('0123456789'.includes(key.sequence)){
                 word += key.sequence
                 print();
@@ -240,7 +240,7 @@ const promptTypes = {
             choices.forEach((choice,i)=>{
                 print+=(ansi.eraseLine)
                 if(i==index){
-                    print+=(chalk.cyan('> '+choice.text+'\n'));   
+                    print+=(chalk.cyan('> '+choice.text+'\n'));
                 }else{
                     print+=('  '+choice.text+'\n');
                 }
@@ -249,7 +249,7 @@ const promptTypes = {
         }
 
         print();
-        
+
         var word = '';
         emitter.on('keypress', key => {
             if (key.ctrl && key.name === 'c') {
@@ -258,8 +258,8 @@ const promptTypes = {
 
             if (key.name === 'return' || key.name === 'tab') {
                 write(ansi.cursorUp(choices.length+1)
-                    + ansi.eraseLine 
-                    + chalk.bold(question) +' '+ chalk.cyan(choices[index].text) 
+                    + ansi.eraseLine
+                    + chalk.bold(question) +' '+ chalk.cyan(choices[index].text)
                     +'\n'
                     + (ansi.eraseLine+'\n').repeat(choices.length)
                     +ansi.cursorUp(choices.length)
@@ -298,13 +298,13 @@ const promptTypes = {
                 print+=(ansi.eraseLine)
                 if(i==index){
                     if(choice.selected){
-                        print+=(chalk.cyan('> '+ selectedBox+' '+choice.text+'\n'));   
+                        print+=(chalk.cyan('> '+ selectedBox+' '+choice.text+'\n'));
                     }else {
                         print+=(chalk.cyan('> '+ unselectedBox+' '+choice.text+'\n'));
                     }
                 }else{
                     if(choice.selected){
-                        print+=('  '+selectedBox+' '+choice.text+'\n'); 
+                        print+=('  '+selectedBox+' '+choice.text+'\n');
                     }else {
                         print+=('  '+unselectedBox+' '+choice.text+'\n');
                     }
@@ -319,7 +319,7 @@ const promptTypes = {
         }
 
         print();
-        
+
         emitter.on('keypress', key => {
             if (key.ctrl && key.name === 'c') {
                 return process.exit();
@@ -328,8 +328,8 @@ const promptTypes = {
             if (key.name === 'return' || key.name === 'tab') {
                 var selectionValues = choices.filter(c=>c.selected).map(c=>c.value);
                 write(ansi.eraseLines(writtenLines)
-                    + ansi.eraseLine 
-                    + chalk.bold(question) +' '+ chalk.cyan(selections()) 
+                    + ansi.eraseLine
+                    + chalk.bold(question) +' '+ chalk.cyan(selections())
                     +'\n'
                     + (ansi.eraseLine+'\n').repeat(choices.length)
                     +ansi.cursorUp(choices.length)
@@ -350,8 +350,8 @@ const promptTypes = {
             if(['left','right'].includes(key.name)){
                 return;
             }
-            
-            
+
+
             //write(ansi.cursorUp(choices.length+Math.ceil((question+' '+selections()).length/process.stdout.columns)));
             print()
         });
@@ -359,8 +359,8 @@ const promptTypes = {
     }
 }
 /**
- * 
- * @param {{}[]} choices 
+ *
+ * @param {{}[]} choices
  */
 function normalizeSelectChoices(choices){
     return choices.map((choice)=>{
