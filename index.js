@@ -63,6 +63,21 @@ function prompt(question) {
 
 module.exports = prompt;
 module.exports.prompt = prompt;
+module.exports.inquirer = {
+    async propmt(questions){
+        questions.forEach(question=>{
+            if(typeof(question.name)!=='string'){
+                throw new Error('question needs a name');
+            }
+        });
+        var answers = await Promise.all(prompt(questions));
+        var result = {};
+        questions.forEach((question,index)=>{
+            result[question.name]=answers[index];
+        });
+        return result;
+    }
+}
 
 function normalize(question){
     if(!question) return {type:'input',question:":"};
@@ -358,10 +373,8 @@ const promptTypes = {
         return promise;
     }
 }
-/**
- * 
- * @param {{}[]} choices 
- */
+
+
 function normalizeSelectChoices(choices){
     return choices.map((choice)=>{
         if(!choice) throw new Error(JSON.stringify(choice)+' is not a choice');

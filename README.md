@@ -19,6 +19,7 @@ prompt('question').then(answer=>console.log(answer));
     - validation (done)
     - slider
     - scolling list/checkbox
+    - export inquirer compatible object (done)
 
 
 # Example
