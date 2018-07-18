@@ -281,7 +281,6 @@ const promptTypes = {
 
     print();
 
-    const word = '';
     emitter.on('keypress', key => {
       if (key.ctrl && key.name === 'c') {
         return process.exit();

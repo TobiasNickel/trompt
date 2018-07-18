@@ -100,4 +100,4 @@ var {prompt} = require('trompt');
 [license-image]: https://img.shields.io/github/license/TobiasNickel/trompt.svg
 [license-url]: https://github.com/TobiasNickel/trompt/blob/master/LICENSE
 [pr-image]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
-[pr-url]: https://github.com/TobiasNickel/trompt/blob/master/CONTRIBUTING.md
+[pr-url]: https://github.com/TobiasNickel/trompt
