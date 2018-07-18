@@ -16,10 +16,14 @@
     },
     "homepage": "https://github.com/TobiasNickel/trompt#readme",
     "repository": {
-      "type": "git",
-      "url": "git+https://github.com/TobiasNickel/trompt.git"
+        "type": "git",
+        "url": "git+https://github.com/TobiasNickel/trompt.git"
     },
     "bugs": {
-      "url": "https://github.com/TobiasNickel/trompt/issues"
+        "url": "https://github.com/TobiasNickel/trompt/issues"
+    },
+    "devDependencies": {
+        "eslint": "^5.1.0",
+        "eslint-config-man": "^1.0.2"
     }
 }
