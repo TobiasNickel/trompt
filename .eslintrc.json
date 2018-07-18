@@ -1,0 +1,6 @@
+{
+  "extends": "man",
+  "rules": {
+    "no-var": "warn"
+  }
+}
