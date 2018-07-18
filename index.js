@@ -73,7 +73,7 @@ function normalize(question) {
   if (!question.type) throw new Error('missing type for question');
 
   //aliases;
-  if (question.type === 'list') question.type == 'select';
+  if (question.type === 'list') question.type = 'select';
   if (question.message) question.question = question.message;
   question.type = question.type.toLowerCase().trim();
   return question;
