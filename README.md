@@ -16,7 +16,7 @@ prompt('question').then(answer=>console.log(answer));
 ```
 # Roadmap
     - simple prompt (done)
-    - stramline prompts, ensure only one at a time (done)
+    - streamline prompts, ensure only one at a time (done)
     - architecture to support more prompt types (done)
     - password (done)
     - number, integer (done)
@@ -25,7 +25,7 @@ prompt('question').then(answer=>console.log(answer));
     - checkbox
     - validation (done)
     - slider
-    - scolling list/checkbox
+    - scrolling list/checkbox
 
 
 # Example
@@ -74,8 +74,8 @@ var {prompt} = require('trompt');
     // let the user enter his height in centimeter
     const height = await prompt({type:'number',question:'hight',suffix:'cm'});
 
-    // ask for hair color and length and garantie that both questions
-    // are asked directly after eachother
+    // ask for hair color and length and guarantee that both questions
+    // are asked directly after each other
     const [ hairColor, hairLength] = await Promise.all([
         prompt('hair color'),
         prompt({type:'number',question:'hair length',suffix:'cm'}),
