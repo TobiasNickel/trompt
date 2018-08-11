@@ -427,6 +427,6 @@ function normalizeSelectChoices(choices) {
     if (!choice.hasOwnProperty(value)) {
       return { value: choice.text, text: choice.text };
     }
-    return { ...choice };
+    return Object.assign({}, choice);
   });
 }
