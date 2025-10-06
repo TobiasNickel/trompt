@@ -1,69 +1,87 @@
-const { prompt } = require('./index.js');
+import { prompt } from './index.js';
 
-(async function() {
-  // ask for name
-  const name = await prompt('name');
+async function runTest() {
+  try {
+    // Ask for name
+    const name = await prompt('What is your name?');
 
-  // ask for mail and make sure it is lower case
-  const mail = (await prompt('mail')).toLowerCase();
+    // Ask for email and make sure it is lower case
+    const mail = (await prompt('What is your email?')).toLowerCase();
 
-  // ask for password, but do not show it
-  const password = await prompt({ type: 'password', question: 'password' });
+    // Ask for password, but do not show it
+    const password = await prompt({ 
+      type: 'password', 
+      question: 'Enter your password:' 
+    });
 
-  // ask for the work
-  const job = await prompt('job');
+    // Ask for the work
+    const job = await prompt('What is your job?');
 
-  // let the user check some of his skills interesting to us
-  const skills = await prompt({
-    type: 'checkbox',
-    message: 'skills',
-    choices: [
-      'javascript',
-      'html/css',
-      'python',
-      'java',
-      'mongodb',
-      'hadoop',
-      'docker',
-      'kubernetics',
-      'blockchain',
-      'machine learning'
-    ]
-  });
+    // Let the user check some of their skills interesting to us
+    const skills = await prompt({
+      type: 'checkbox',
+      question: 'Select your skills:',
+      choices: [
+        'JavaScript',
+        'HTML/CSS',
+        'Python',
+        'Java',
+        'MongoDB',
+        'Hadoop',
+        'Docker',
+        'Kubernetes',
+        'Blockchain',
+        'Machine Learning'
+      ]
+    });
 
-  // let the user select his eye color
-  const eyeColor = await prompt({
-    type: 'select',
-    question: 'eye color',
-    choices: ['brown', 'black', 'blue', 'yellow', 'green']
-  });
+    // Let the user select their eye color
+    const eyeColor = await prompt({
+      type: 'select',
+      question: 'What is your eye color?',
+      choices: ['brown', 'black', 'blue', 'yellow', 'green']
+    });
 
-  // let the user enter his height in centimeter
-  const height = await prompt({
-    type: 'number',
-    question: 'hight',
-    suffix: 'cm'
-  });
+    // Let the user enter their height in centimeters
+    const height = await prompt({
+      type: 'number',
+      question: 'What is your height?',
+      suffix: 'cm',
+      min: 50,
+      max: 250
+    });
 
-  // ask for hair color and length and garantie that both questions
-  // are asked directly after eachother
-  const [hairColor, hairLength] = await Promise.all([
-    prompt('hair color'),
-    prompt({ type: 'number', question: 'hair length', suffix: 'cm' })
-  ]);
+    // Ask for hair color and length
+    // Note: Using Promise.all is not recommended for interactive prompts
+    // as they should be sequential for better UX
+    const hairColor = await prompt('What is your hair color?');
+    const hairLength = await prompt({ 
+      type: 'number', 
+      question: 'What is your hair length?', 
+      suffix: 'cm',
+      min: 0,
+      max: 100
+    });
 
-  const user = {
-    name,
-    mail,
-    password,
-    job,
-    skills,
-    height,
-    eyeColor,
-    hair: { color: hairColor, length: hairLength }
-  };
+    const user = {
+      name,
+      mail,
+      password,
+      job,
+      skills,
+      height,
+      eyeColor,
+      hair: { color: hairColor, length: hairLength }
+    };
 
-  console.log(user);
+    console.log('\nUser profile:');
+    console.log(JSON.stringify(user, null, 2));
 
-  process.exit();
-})();
+    process.exit(0);
+  } catch (error) {
+    console.error('Error:', error.message);
+    process.exit(1);
+  }
+}
+
+runTest();

@@ -1,17 +1,25 @@
 {
     "name": "trompt",
-    "description": "CLI questionary",
+    "description": "Modern CLI questionary library",
     "keywords": [
         "console",
         "prompt",
-        "input"
+        "input",
+        "cli",
+        "interactive",
+        "questionnaire",
+        "terminal"
     ],
     "main": "index.js",
-    "version": "0.0.14",
+    "version": "1.0.0",
     "license": "MIT",
+    "type": "module",
+    "engines": {
+        "node": ">=16.0.0"
+    },
     "dependencies": {
-        "ansi-escapes": "^3.1.0",
-        "chalk": "^2.4.1",
+        "ansi-escapes": "^6.2.0",
+        "chalk": "^5.3.0",
         "tmitter": "^1.0.0"
     },
     "homepage": "https://github.com/TobiasNickel/trompt#readme",
@@ -23,7 +31,10 @@
         "url": "https://github.com/TobiasNickel/trompt/issues"
     },
     "devDependencies": {
-        "eslint": "^5.1.0",
-        "eslint-config-man": "^1.0.2"
+        "eslint": "^8.57.0",
+        "@eslint/js": "^9.9.0"
+    },
+    "exports": {
+        ".": "./index.js"
     }
 }
