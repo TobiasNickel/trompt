@@ -1,6 +1,6 @@
 {
     "name": "trompt",
-    "description": "Modern CLI questionary library",
+    "description": "Modern CLI questionary library with TypeScript support",
     "keywords": [
         "console",
         "prompt",
@@ -8,10 +8,14 @@
         "cli",
         "interactive",
         "questionnaire",
-        "terminal"
+        "terminal",
+        "typescript",
+        "inquirer",
+        "questions"
     ],
     "main": "index.js",
-    "version": "1.0.0",
+    "types": "index.d.ts",
+    "version": "1.0.1",
     "license": "MIT",
     "type": "module",
     "engines": {
@@ -31,10 +35,28 @@
         "url": "https://github.com/TobiasNickel/trompt/issues"
     },
     "devDependencies": {
+        "@eslint/js": "^9.9.0",
+        "@types/node": "^24.6.2",
         "eslint": "^8.57.0",
-        "@eslint/js": "^9.9.0"
+        "typescript": "^5.0.0"
     },
     "exports": {
-        ".": "./index.js"
+        ".": {
+            "import": "./index.js",
+            "types": "./index.d.ts"
+        }
+    },
+    "files": [
+        "index.js",
+        "index.d.ts",
+        "README.md",
+        "CHANGELOG.md",
+        "LICENSE"
+    ],
+    "scripts": {
+        "test": "node validate.js",
+        "type-check": "tsc --noEmit",
+        "demo": "node demo.js",
+        "demo:inquirer": "node demo.js inquirer"
     }
 }

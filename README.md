@@ -13,7 +13,8 @@ A modernized, ES module-compatible CLI prompt library similar to inquirer, with 
 ## ✨ Features
 
 - **ES Modules** - Modern JavaScript with full ES module support
-- **TypeScript Ready** - Comprehensive JSDoc annotations for excellent IntelliSense
+- **TypeScript Support** - Complete TypeScript definitions with full type safety
+- **IntelliSense Ready** - Excellent IDE support with comprehensive type definitions
 - **Multiple Input Types** - Text, password, number, select, checkbox
 - **Validation** - Built-in and custom validation support
 - **Inquirer Compatible** - Drop-in replacement API available
@@ -206,6 +207,63 @@ async function collectUserData() {
 const userData = await collectUserData();
 console.log('User data:', userData);
 ```
+
+## 🎯 TypeScript Support
+
+Trompt includes comprehensive TypeScript definitions for full type safety and excellent IntelliSense:
+
+```typescript
+import { prompt, inquirer, type InquirerQuestion } from 'trompt';
+
+// Type-safe prompts with automatic return type inference
+const name: string = await prompt('Your name:');
+
+const age: number = await prompt({
+  type: 'number',
+  question: 'Your age:',
+  min: 0,
+  max: 150,
+  validate: (value: number): boolean | string => {
+    return value > 0 ? true : 'Age must be positive';
+  }
+});
+
+const colors: string[] = await prompt({
+  type: 'checkbox',
+  question: 'Favorite colors:',
+  choices: ['Red', 'Green', 'Blue']
+});
+
+// Inquirer-style with typed questions
+const questions: InquirerQuestion[] = [
+  {
+    name: 'username',
+    type: 'input',
+    question: 'Username:',
+    validate: (value: string) => value.length > 0
+  },
+  {
+    name: 'framework',
+    type: 'select',
+    question: 'Framework:',
+    choices: ['React', 'Vue', 'Angular']
+  }
+];
+
+const answers = await inquirer.prompt(questions);
+// answers.username and answers.framework are properly typed
+```
+
+### Type Definitions
+
+All prompt configurations are fully typed:
+
+- `InputPromptConfig` - Text input prompts
+- `PasswordPromptConfig` - Hidden password input
+- `NumberPromptConfig` - Number/integer input with validation
+- `SelectPromptConfig` - Single selection from choices
+- `CheckboxPromptConfig` - Multiple selection from choices
+- `InquirerQuestion` - Inquirer-style question objects
 
 ## 🔧 Configuration Options
 

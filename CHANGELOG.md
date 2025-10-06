@@ -8,13 +8,17 @@
 - **Package Type**: Changed `package.json` type to `"module"`
 
 ### ✨ New Features
+- **TypeScript Support**: Complete TypeScript definitions with full type safety
+  - Comprehensive type definitions for all prompt types
+  - Type-safe validation functions
+  - Proper IntelliSense support in IDEs
+  - Inquirer-style API with full typing
 - **Modern Syntax**: Updated to modern JavaScript features
   - Template literals instead of string concatenation
   - Arrow functions with consistent usage
   - `const`/`let` instead of `var`
   - Modern array methods and object spread
 - **Better Error Handling**: Improved error messages and validation
-- **TypeScript Ready**: Comprehensive JSDoc annotations for better IntelliSense
 - **Enhanced API**: More consistent configuration options
 - **Inquirer Compatibility**: Fixed typo in inquirer.prompt method name
 

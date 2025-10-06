@@ -1,0 +1,8 @@
+{
+  "name": "trompt-test-consumer", 
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "trompt": "file:.."
+  }
+}
